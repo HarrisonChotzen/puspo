@@ -10,6 +10,7 @@ class Event {
   EventPage page;
   final DocumentReference reference;
 
+   //not currently used 
   void updateData(selectedDoc, newValues) {
     Firestore.instance
         .collection('Event')
@@ -20,6 +21,7 @@ class Event {
     });
   }
  
+  //not currently used 
   void deleteData(docId) {
     Firestore.instance
         .collection('Event')

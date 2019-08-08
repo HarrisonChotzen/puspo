@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'eventsList.dart';
 
-void main() => runApp(new Avenue());
+void main() => runApp(new Puspo());
 
-class Avenue extends StatelessWidget {
+class Puspo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Avenue',
+      title: 'Puspo',
       theme: new ThemeData(
         primaryColor: Colors.red,
       ),

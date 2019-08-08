@@ -1,8 +1,8 @@
 // New Event Form
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'event.dart';
+import 'eventsList.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -20,9 +20,7 @@ class EventForm extends StatefulWidget {
 }
 
 class _EventFormState extends State<EventForm> {
-  
   Event newGame = new Event();
-
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   _submitForm() {
@@ -32,7 +30,7 @@ class _EventFormState extends State<EventForm> {
     } else {
       form.save(); //This invokes each call to onSaved
       print('Submitting to back end...');
-      Firestore.instance.collection('Event').reference().add({'name': newGame.name, 'phone': newGame.phone, 'email': newGame.email})
+      Firestore.instance.collection('Event').reference().add({'name': newGame.name, 'notes': newGame.notes})
         .then((value) => 
           showMessage('New event page created for ${newGame.name}', Colors.blue)
         );
@@ -41,6 +39,15 @@ class _EventFormState extends State<EventForm> {
 
   @override
   Widget build(BuildContext context) {
+    void _popEventsList() {
+      Navigator.of(context).pop(
+        new MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return new EventsList();
+          },
+        ),
+      );
+    }
     return new Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
@@ -76,7 +83,8 @@ class _EventFormState extends State<EventForm> {
                       padding: const EdgeInsets.only(left: 40.0, top: 20.0),
                       child: new RaisedButton(
                         child: const Text('Create Event'),
-                        onPressed: _submitForm,
+                        onPressed: () { _submitForm(); _popEventsList();
+                        },
                         color: Theme.of(context).accentColor,
                         textColor: Colors.white,
                         elevation: 4.0,
