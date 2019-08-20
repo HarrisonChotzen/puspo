@@ -1,5 +1,4 @@
 // Event Page (Individual)
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'eventsList.dart';
@@ -34,8 +33,8 @@ class EventPage extends StatelessWidget {
         actions: <Widget>[
           new IconButton(icon: const Icon(Icons.delete), 
             onPressed: () => Firestore.instance.runTransaction((Transaction myTransaction) async {
+              showMessage('Your event ${game.name} has been removed from your Events List', Colors.red);
               await myTransaction.delete(snapshot.reference);
-              showMessage('Your event ${game.name} has been removed from your Events List', Colors.blue);
               _popEventsList();
             }),
           )],

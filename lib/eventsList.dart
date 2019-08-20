@@ -1,11 +1,86 @@
 // Event List (All)
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'event.dart';
 import 'eventPage.dart';
 import 'eventForm.dart';
 
+class UpdateDataFromFireStore extends StatefulWidget {
+  final DocumentSnapshot docSnap;
+  UpdateDataFromFireStore({Key key, @required this.docSnap}) : super(key: key);
+  @override
+  _UpdateDataFromFireStoreState createState() =>
+      _UpdateDataFromFireStoreState(snap: docSnap);
+}
+
+class _UpdateDataFromFireStoreState extends State<UpdateDataFromFireStore> {
+  DocumentSnapshot snap;
+  _UpdateDataFromFireStoreState({@required this.snap});
+  TextEditingController _controller = TextEditingController();
+  DocumentSnapshot _currentDocument;
+
+  _updateData() async {
+    await db
+        .collection('Event')
+        .document(_currentDocument.documentID)
+        .updateData({'name': _controller.text});
+  }
+
+  final db = Firestore.instance;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Update Data from Firestore")),
+      body: ListView(
+        padding: EdgeInsets.all(12.0),
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 15.0),
+            child: TextField(
+              controller: _controller,
+              decoration: InputDecoration(hintText: 'Enter Title'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: RaisedButton(
+              child: Text('Update'),
+              color: Colors.red,
+              onPressed: _updateData,
+            ),
+          ),
+          SizedBox(height: 20.0),
+          StreamBuilder<QuerySnapshot>(
+              stream: db.collection('Event').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Column(
+                    children: snapshot.data.documents.map((doc) {
+                      return ListTile(
+                        title: Text(doc.data['name'] ?? 'nil'),
+                        trailing: RaisedButton(
+                          child: Text("Edit"),
+                          color: Colors.red,
+                          onPressed: () async {
+                            setState(() {
+                              _currentDocument = doc;
+                              _controller.text = doc.data['name'];
+                            });
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  );
+                } else {
+                  return SizedBox();
+                }
+              }),
+        ],
+      ),
+    );
+  }
+}
 
 class EventsList extends StatefulWidget {
   @override
@@ -64,6 +139,13 @@ class EventsListState extends State<EventsList> {
        ),
        child: ListTile(
          title: Text(game.name),
+         trailing: IconButton(icon: Icon(Icons.edit), 
+            onPressed: () { Navigator.push(context, MaterialPageRoute(
+              builder: (context) => UpdateDataFromFireStore(docSnap: snapshot),
+             ),
+            );
+           },
+         ),
          onTap: () { Navigator.push(
            context,
            MaterialPageRoute(

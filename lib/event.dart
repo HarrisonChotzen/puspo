@@ -4,42 +4,22 @@ import 'eventPage.dart';
 
 class Event {
   String name;
+  String notes;
   DateTime dob;
-  // Sport gameType;
-  String notes = '';
   EventPage page;
   final DocumentReference reference;
-
-   //not currently used 
-  void updateData(selectedDoc, newValues) {
-    Firestore.instance
-        .collection('Event')
-        .document(selectedDoc)
-        .updateData(newValues)
-        .catchError((e) {
-      print(e);
-    });
-  }
- 
-  //not currently used 
-  void deleteData(docId) {
-    Firestore.instance
-        .collection('Event')
-        .document(docId)
-        .delete()
-        .catchError((e) {
-      print(e);
-    });
-  }
 
   Event.fromSnapshot(DocumentSnapshot snapshot)
      : this.fromMap(snapshot.data, reference: snapshot.reference);
   
-  Event.fromMap(Map<String, dynamic> map, {this.reference})
-     : assert(map['name'] != null),
-       name = map['name'];
+  Event.fromMap(Map<String, dynamic> map, {this.reference}) 
+     : assert(map['name'] != null, map['notes'] != null),
+       name = map['name'], notes = map['notes'];
+     
 
   Event() 
     : reference = Firestore.instance.collection('Event').document();
 }
+
+
 
