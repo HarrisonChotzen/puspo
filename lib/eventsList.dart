@@ -16,14 +16,22 @@ class UpdateDataFromFireStore extends StatefulWidget {
 class _UpdateDataFromFireStoreState extends State<UpdateDataFromFireStore> {
   DocumentSnapshot snap;
   _UpdateDataFromFireStoreState({@required this.snap});
+  String detailType = '';
   TextEditingController _controller = TextEditingController();
   DocumentSnapshot _currentDocument;
 
   _updateData() async {
-    await db
-        .collection('Event')
-        .document(_currentDocument.documentID)
-        .updateData({'name': _controller.text});
+    if (detailType == "name") {
+      await db
+          .collection('Event')
+          .document(_currentDocument.documentID)
+          .updateData({'name': _controller.text});
+    } else {
+      await db
+          .collection('Event')
+          .document(_currentDocument.documentID)
+          .updateData({'notes': _controller.text});
+    }
   }
 
   final db = Firestore.instance;
@@ -51,39 +59,46 @@ class _UpdateDataFromFireStoreState extends State<UpdateDataFromFireStore> {
               onPressed: _updateData,
             ),
           ),
-          Column( 
-            children: <Widget>[
-                  ListTile(
-                        title: Text('Name: ' + snap.data['name'] ?? 'nil'),
-                        trailing: RaisedButton(
-                          child: Text("Edit"),
-                          color: Colors.white,
-                          textColor: Colors.red,
-                          onPressed: () async {
-                            setState(() {
-                              _currentDocument = snap;
-                              _controller.text = snap.data['name'];
-                            });
-                          },
+          StreamBuilder<QuerySnapshot>(
+          stream: db.collection('Event').snapshots(),
+          builder: (context, snapshot) {
+              return Column( 
+                  children: <Widget>[
+                      ListTile(
+                            title: Text('Name: ' + snap.data['name'] ?? 'nil'),
+                            trailing: RaisedButton(
+                              child: Text("Edit"),
+                              color: Colors.white,
+                              textColor: Colors.red,
+                              onPressed: () async {
+                                setState(() {
+                                  _currentDocument = snap;
+                                  _controller.text = snap.data['name'];
+                                  detailType = "name";
+                                });
+                              },
+                            ),
+                          ),
+                      ListTile(
+                          title: Text('Notes: ' + snap.data['notes'] ?? 'nil'),
+                          trailing: RaisedButton(
+                            child: Text("Edit"),
+                            color: Colors.white,
+                            textColor: Colors.red,
+                            onPressed: () async {
+                              setState(() {
+                                _currentDocument = snap;
+                                _controller.text = snap.data['notes'];
+                                detailType = "notes";
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                  ListTile(
-                      title: Text('Notes: ' + snap.data['notes'] ?? 'nil'),
-                      trailing: RaisedButton(
-                        child: Text("Edit"),
-                        color: Colors.white,
-                        textColor: Colors.red,
-                        onPressed: () async {
-                          setState(() {
-                            _currentDocument = snap;
-                            _controller.text = snap.data['notes'];
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-        ],
+                      ],
+                    );
+                  }
+            ),
+          ]
       ),
     );
   }
