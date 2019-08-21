@@ -31,7 +31,7 @@ class _UpdateDataFromFireStoreState extends State<UpdateDataFromFireStore> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Update Data from Firestore")),
+      appBar: AppBar(title: Text("Update Event Details")),
       body: ListView(
         padding: EdgeInsets.all(12.0),
         children: <Widget>[
@@ -47,35 +47,42 @@ class _UpdateDataFromFireStoreState extends State<UpdateDataFromFireStore> {
             child: RaisedButton(
               child: Text('Update'),
               color: Colors.red,
+              textColor: Colors.white,
               onPressed: _updateData,
             ),
           ),
-          SizedBox(height: 20.0),
-          StreamBuilder<QuerySnapshot>(
-              stream: db.collection('Event').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    children: snapshot.data.documents.map((doc) {
-                      return ListTile(
-                        title: Text(doc.data['name'] ?? 'nil'),
+          Column( 
+            children: <Widget>[
+                  ListTile(
+                        title: Text('Name: ' + snap.data['name'] ?? 'nil'),
                         trailing: RaisedButton(
                           child: Text("Edit"),
-                          color: Colors.red,
+                          color: Colors.white,
+                          textColor: Colors.red,
                           onPressed: () async {
                             setState(() {
-                              _currentDocument = doc;
-                              _controller.text = doc.data['name'];
+                              _currentDocument = snap;
+                              _controller.text = snap.data['name'];
                             });
                           },
                         ),
-                      );
-                    }).toList(),
-                  );
-                } else {
-                  return SizedBox();
-                }
-              }),
+                      ),
+                  ListTile(
+                      title: Text('Notes: ' + snap.data['notes'] ?? 'nil'),
+                      trailing: RaisedButton(
+                        child: Text("Edit"),
+                        color: Colors.white,
+                        textColor: Colors.red,
+                        onPressed: () async {
+                          setState(() {
+                            _currentDocument = snap;
+                            _controller.text = snap.data['notes'];
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
         ],
       ),
     );
