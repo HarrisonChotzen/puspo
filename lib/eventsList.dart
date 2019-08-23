@@ -26,11 +26,22 @@ class _UpdateDataFromFireStoreState extends State<UpdateDataFromFireStore> {
           .collection('Event')
           .document(_currentDocument.documentID)
           .updateData({'name': _controller.text});
-    } else {
+    } else if (detailType == "notes") {
       await db
           .collection('Event')
           .document(_currentDocument.documentID)
           .updateData({'notes': _controller.text});
+    } else if (detailType == "numPlayersNeeded") {
+      await db
+          .collection('Event')
+          .document(_currentDocument.documentID)
+          .updateData({'numPlayersNeeded': _controller.text});
+    }
+    else {
+      await db
+          .collection('Event')
+          .document(_currentDocument.documentID)
+          .updateData({'time': _controller.text});
     }
   }
 
@@ -79,6 +90,22 @@ class _UpdateDataFromFireStoreState extends State<UpdateDataFromFireStore> {
                               },
                             ),
                           ),
+                           ListTile(
+                            title: Text('Time: ' + snap.data['time'] ?? 'nil'),
+                            trailing: RaisedButton(
+                              child: Text("Edit"),
+                              color: Colors.white,
+                              textColor: Colors.red,
+                              onPressed: () async {
+                                setState(() {
+                                  _currentDocument = snap;
+                                  _controller.text = snap.data['time'];
+                                  detailType = "time";
+                                });
+                              },
+                            ),
+                          ),
+                          
                       ListTile(
                           title: Text('Notes: ' + snap.data['notes'] ?? 'nil'),
                           trailing: RaisedButton(
@@ -161,6 +188,7 @@ class EventsListState extends State<EventsList> {
        ),
        child: ListTile(
          title: Text(game.name),
+         subtitle: Text(game.time),
          trailing: IconButton(icon: Icon(Icons.edit), 
             onPressed: () { Navigator.push(context, MaterialPageRoute(
               builder: (context) => UpdateDataFromFireStore(docSnap: snapshot),

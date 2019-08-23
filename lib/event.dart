@@ -5,7 +5,8 @@ import 'eventPage.dart';
 class Event {
   String name;
   String notes;
-  DateTime dob;
+  String time;
+  int numPlayersNeeded;
   EventPage page;
   final DocumentReference reference;
 
@@ -14,7 +15,7 @@ class Event {
   
   Event.fromMap(Map<String, dynamic> map, {this.reference}) 
      : assert(map['name'] != null, map['notes'] != null),
-       name = map['name'], notes = map['notes'];
+       name = map['name'], notes = map['notes'], time = map['time'], numPlayersNeeded = map['numPlayersNeeded'];
      
 
   Event() 

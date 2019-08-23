@@ -56,6 +56,30 @@ class EventPage extends StatelessWidget {
                   ),
                 ),
             new Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: ListTile(
+                    title: Text('Event Time: ${game.time}'),
+                    ),
+                  ),
+                ),
+            new Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: ListTile(
+                    title: Text('Number of Players Needed: ${game.numPlayersNeeded}'),
+                    ),
+                  ),
+                ),
+            new Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Container(
                     decoration: BoxDecoration(

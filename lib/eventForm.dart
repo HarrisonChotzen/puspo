@@ -4,6 +4,8 @@ import 'event.dart';
 import 'eventsList.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+
 final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 void showMessage(String message, [MaterialColor color = Colors.blue]) {
     _scaffoldKey.currentState
@@ -29,7 +31,7 @@ class _EventFormState extends State<EventForm> {
     } else {
       form.save(); //This invokes each call to onSaved
       print('Submitting to back end...');
-      Firestore.instance.collection('Event').reference().add({'name': newGame.name, 'notes': newGame.notes})
+      Firestore.instance.collection('Event').reference().add({'name': newGame.name, 'notes': newGame.notes, 'time': newGame.time, 'numPlayersNeeded': newGame.numPlayersNeeded})
         .then((value) => 
           showMessage('New event page created for ${newGame.name}', Colors.blue)
         );
@@ -77,6 +79,23 @@ class _EventFormState extends State<EventForm> {
                       labelText: 'Notes',
                     ),
                     onSaved: (value) { newGame.notes = value; },
+                  ),
+                  new TextFormField(
+                    decoration: const InputDecoration(
+                      icon: const Icon(Icons.create),
+                      hintText: 'Enter Time of Game',
+                      labelText: 'Time',
+                    ),
+                    onSaved: (value) { newGame.time = value; },
+                  ),
+                  new TextFormField(
+                    decoration: const InputDecoration(
+                      icon: const Icon(Icons.create),
+                      hintText: 'Enter Number of Players Needed',
+                      labelText: '# players needed',
+                    ),
+                    // validator: (value) => isNumeric(value) ? 'Must be a number' : null,
+                    onSaved: (value) { newGame.numPlayersNeeded = int.parse(value); },
                   ),
                   new Container(
                       padding: const EdgeInsets.only(left: 40.0, top: 20.0),
